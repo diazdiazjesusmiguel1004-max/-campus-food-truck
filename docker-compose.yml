@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: foodtruck-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: foodtruck
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend-spring:
+    build: ./backend-spring
+    container_name: foodtruck-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=foodtruck
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - ANALYTICS_SERVICE_URL=http://analytics-python:8000
+    depends_on:
+      db:
+        condition: service_healthy
+
+  analytics-python:
+    build: ./analytics-python
+    container_name: foodtruck-analytics
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_URL=http://backend-spring:8080
+    depends_on:
+      - backend-spring

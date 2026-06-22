@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma de Gestion y Monitoreo de Pedidos para Cafeteria y Food Truck Universitaria. Pide, recoge y ahorra tiempo.">
+    <title>Campus Bites | Food Truck Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-theme">
+    
+    <!-- Micro-Animation Background Gradients -->
+    <div class="bg-gradient-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast hidden">
+        <div class="toast-content">
+            <i id="toast-icon" class="fa-solid fa-circle-check"></i>
+            <span id="toast-message">Mensaje de notificacion</span>
+        </div>
+    </div>
+
+    <!-- Container -->
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                <h1>Campus<span>Bites</span></h1>
+            </div>
+            <div class="header-user-nav hidden" id="user-nav">
+                <span class="user-badge" id="user-display-name"><i class="fa-solid fa-user"></i> Carga...</span>
+                <span class="user-role-badge" id="user-display-role">Estudiante</span>
+                <button class="btn btn-outline btn-sm" id="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="app-main">
+            
+            <!-- SCREEN 1: AUTHENTICATION (LOGIN & REGISTER) -->
+            <section id="screen-auth" class="screen active">
+                <div class="auth-card-wrapper">
+                    <div class="auth-card">
+                        <div class="auth-tabs">
+                            <button class="tab-btn active" id="tab-login-trigger">Iniciar Sesion</button>
+                            <button class="tab-btn" id="tab-register-trigger">Registrarse</button>
+                        </div>
+
+                        <!-- Login Form -->
+                        <div class="auth-form-container active" id="form-login-container">
+                            <form id="form-login" class="auth-form">
+                                <h2>¡Qué bueno verte!</h2>
+                                <p class="form-subtitle">Ingresa tus credenciales universitarias para pedir tu comida.</p>
+                                
+                                <div class="form-group">
+                                    <label for="login-email"><i class="fa-solid fa-envelope"></i> Correo Institucional</label>
+                                    <input type="email" id="login-email" placeholder="ejemplo@campus.edu" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="login-password"><i class="fa-solid fa-lock"></i> Contraseña</label>
+                                    <input type="password" id="login-password" placeholder="••••••••" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-block" id="btn-submit-login">
+                                    <span>Ingresar</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                                </button>
+                                
+                                <div class="demo-credentials">
+                                    <p><strong>Cuentas de demostración:</strong></p>
+                                    <ul>
+                                        <li>🎓 Estudiante: <code>estudiante@campus.edu</code> (Clave: <code>123456</code>)</li>
+                                        <li>🍳 Cocinero: <code>cocinero@campus.edu</code> (Clave: <code>123456</code>)</li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Register Form -->
+                        <div class="auth-form-container" id="form-register-container">
+                            <form id="form-register" class="auth-form">
+                                <h2>Crea tu cuenta</h2>
+                                <p class="form-subtitle">Registrate para saltarte las filas del food truck hoy mismo.</p>
+                                
+                                <div class="form-group">
+                                    <label for="reg-nombre"><i class="fa-solid fa-user-tag"></i> Nombre Completo</label>
+                                    <input type="text" id="reg-nombre" placeholder="Juan Perez" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-email"><i class="fa-solid fa-envelope"></i> Correo Institucional</label>
+                                    <input type="email" id="reg-email" placeholder="ejemplo@campus.edu" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-password"><i class="fa-solid fa-lock"></i> Contraseña</label>
+                                    <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fa-solid fa-users-gear"></i> Tipo de Rol</label>
+                                    <div class="role-selector-group">
+                                        <label class="role-radio">
+                                            <input type="radio" name="reg-rol" value="ESTUDIANTE" checked>
+                                            <span class="radio-card">
+                                                <i class="fa-solid fa-graduation-cap"></i>
+                                                Estudiante
+                                            </span>
+                                        </label>
+                                        <label class="role-radio">
+                                            <input type="radio" name="reg-rol" value="COCINERO">
+                                            <span class="radio-card">
+                                                <i class="fa-solid fa-kitchen-set"></i>
+                                                Cocinero
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-secondary btn-block">
+                                    <span>Crear Cuenta</span> <i class="fa-solid fa-user-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCREEN 2: STUDENT DASHBOARD -->
+            <section id="screen-student" class="screen">
+                <div class="student-layout">
+                    <!-- Left: Menu Catalog -->
+                    <div class="menu-catalog-section">
+                        <div class="section-title-bar">
+                            <div>
+                                <h2>El Menú del Día</h2>
+                                <p class="text-muted">Ordena con anticipación y retira sin hacer cola.</p>
+                            </div>
+                            <span class="badge badge-success"><i class="fa-solid fa-clock"></i> Abierto Ahora</span>
+                        </div>
+                        
+                        <div class="menu-grid" id="menu-items-container">
+                            <!-- JS will inject products here -->
+                            <div class="loader-placeholder">Cargando platos sabrosos...</div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Order Cart & History -->
+                    <div class="order-sidebar">
+                        
+                        <!-- Cart Container -->
+                        <div class="glass-card cart-card">
+                            <h3><i class="fa-solid fa-basket-shopping"></i> Tu Carrito</h3>
+                            
+                            <div class="cart-items-list" id="cart-items-container">
+                                <div class="empty-cart-message">
+                                    <i class="fa-solid fa-pizza-slice"></i>
+                                    <p>Tu carrito está vacío. ¡Elige algo rico de la lista!</p>
+                                </div>
+                            </div>
+
+                            <div class="cart-summary hidden" id="cart-summary-box">
+                                <div class="summary-line">
+                                    <span>Subtotal</span>
+                                    <span id="cart-subtotal">$0.00</span>
+                                </div>
+                                <div class="summary-line highlight">
+                                    <span>Total a pagar</span>
+                                    <span id="cart-total">$0.00</span>
+                                </div>
+                                <button class="btn btn-primary btn-block" id="btn-checkout">
+                                    <i class="fa-solid fa-receipt"></i> Confirmar Pedido
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Student Order History -->
+                        <div class="glass-card history-card">
+                            <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial de Pedidos</h3>
+                            <div class="history-list" id="student-orders-history">
+                                <!-- JS will inject orders -->
+                                <div class="empty-history">No has realizado pedidos aún.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- SCREEN 3: CHEF DASHBOARD -->
+            <section id="screen-chef" class="screen">
+                <div class="chef-tabs">
+                    <button class="chef-tab-btn active" id="btn-chef-orders"><i class="fa-solid fa-clipboard-list"></i> Comandas Activas</button>
+                    <button class="chef-tab-btn" id="btn-chef-products"><i class="fa-solid fa-utensils"></i> Menú y Disponibilidad</button>
+                    <button class="chef-tab-btn" id="btn-chef-analytics"><i class="fa-solid fa-chart-line"></i> Analítica de Ventas</button>
+                </div>
+
+                <div class="chef-content-area">
+                    
+                    <!-- Sub-screen 3.1: Active Kitchen Orders -->
+                    <div class="chef-sub-screen active" id="chef-orders-panel">
+                        <div class="section-title-bar">
+                            <div>
+                                <h2>Comandas en Cocina</h2>
+                                <p class="text-muted">Controla y cambia el estado de los pedidos en tiempo real.</p>
+                            </div>
+                            <button class="btn btn-outline btn-sm" id="btn-refresh-orders"><i class="fa-solid fa-rotate"></i> Actualizar</button>
+                        </div>
+                        
+                        <div class="chef-orders-columns">
+                            <!-- Column 1: Pendiente -->
+                            <div class="order-column column-pendiente">
+                                <div class="column-header">
+                                    <span class="indicator indicator-pendiente"></span>
+                                    <h3>Pendientes <span class="count-badge" id="count-pendiente">0</span></h3>
+                                </div>
+                                <div class="column-list" id="list-pendiente">
+                                    <!-- JS will inject orders -->
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Preparando -->
+                            <div class="order-column column-preparando">
+                                <div class="column-header">
+                                    <span class="indicator indicator-preparando"></span>
+                                    <h3>Preparando <span class="count-badge" id="count-preparando">0</span></h3>
+                                </div>
+                                <div class="column-list" id="list-preparando">
+                                    <!-- JS will inject orders -->
+                                </div>
+                            </div>
+
+                            <!-- Column 3: Listo -->
+                            <div class="order-column column-listo">
+                                <div class="column-header">
+                                    <span class="indicator indicator-listo"></span>
+                                    <h3>Listos <span class="count-badge" id="count-listo">0</span></h3>
+                                </div>
+                                <div class="column-list" id="list-listo">
+                                    <!-- JS will inject orders -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-screen 3.2: Menu and Availability management -->
+                    <div class="chef-sub-screen" id="chef-products-panel">
+                        <div class="chef-products-layout">
+                            
+                            <!-- Menu List Table -->
+                            <div class="glass-card product-table-card">
+                                <div class="table-header-title">
+                                    <h3>Lista de Productos</h3>
+                                    <p class="text-muted">Desactiva platos si te quedaste sin ingredientes.</p>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="product-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Plato</th>
+                                                <th>Precio</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="chef-products-table-body">
+                                            <!-- JS will inject products rows -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Add Product Form -->
+                            <div class="glass-card add-product-card">
+                                <h3><i class="fa-solid fa-square-plus"></i> Añadir Nuevo Plato</h3>
+                                <form id="form-add-product" class="add-product-form">
+                                    <div class="form-group">
+                                        <label for="prod-nombre">Nombre del Plato</label>
+                                        <input type="text" id="prod-nombre" placeholder="Ej. Torta de Chocolate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prod-precio">Precio ($)</label>
+                                        <input type="number" id="prod-precio" step="0.01" min="0.10" placeholder="Ej. 3.50" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prod-imagen">URL de la Imagen (Opcional)</label>
+                                        <input type="text" id="prod-imagen" placeholder="Ej. https://images.unsplash.com/photo-...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="checkbox-container">
+                                            <input type="checkbox" id="prod-dispo" checked>
+                                            <span class="checkmark"></span>
+                                            Disponible inmediatamente
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary btn-block">
+                                        <i class="fa-solid fa-plus"></i> Guardar Producto
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-screen 3.3: Analytics Dashboard -->
+                    <div class="chef-sub-screen" id="chef-analytics-panel">
+                        <div class="section-title-bar">
+                            <div>
+                                <h2>Analítica de Ventas</h2>
+                                <p class="text-muted">Información procesada por el microservicio de Python sobre tendencias de consumo.</p>
+                            </div>
+                            <button class="btn btn-outline btn-sm" id="btn-refresh-analytics"><i class="fa-solid fa-chart-pie"></i> Recalcular Reporte</button>
+                        </div>
+
+                        <!-- KPI Dashboard -->
+                        <div class="kpi-grid">
+                            <div class="glass-card kpi-card">
+                                <div class="kpi-icon icon-earnings"><i class="fa-solid fa-dollar-sign"></i></div>
+                                <div class="kpi-info">
+                                    <span class="kpi-label">Ingresos Totales</span>
+                                    <h2 id="kpi-earnings">$0.00</h2>
+                                </div>
+                            </div>
+                            <div class="glass-card kpi-card">
+                                <div class="kpi-icon icon-orders"><i class="fa-solid fa-receipt"></i></div>
+                                <div class="kpi-info">
+                                    <span class="kpi-label">Pedidos Completados</span>
+                                    <h2 id="kpi-orders-count">0</h2>
+                                </div>
+                            </div>
+                            <div class="glass-card kpi-card">
+                                <div class="kpi-icon icon-popular"><i class="fa-solid fa-star"></i></div>
+                                <div class="kpi-info">
+                                    <span class="kpi-label">Plato Estrella</span>
+                                    <h2 id="kpi-star-dish">-</h2>
+                                </div>
+                            </div>
+                            <div class="glass-card kpi-card">
+                                <div class="kpi-icon icon-time"><i class="fa-solid fa-business-time"></i></div>
+                                <div class="kpi-info">
+                                    <span class="kpi-label">Hora Más Concurrida</span>
+                                    <h2 id="kpi-peak-hour">-</h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics Charts -->
+                        <div class="charts-grid">
+                            <div class="glass-card chart-card">
+                                <h3><i class="fa-solid fa-chart-column"></i> Platos Más Vendidos</h3>
+                                <div class="chart-container">
+                                    <canvas id="chart-dishes"></canvas>
+                                </div>
+                            </div>
+                            <div class="glass-card chart-card">
+                                <h3><i class="fa-solid fa-chart-line"></i> Curva de Demanda (Horas Pico)</h3>
+                                <div class="chart-container">
+                                    <canvas id="chart-hours"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer text-muted">
+            <p>&copy; 2026 Campus Bites - Proyecto Final de Ingeniería de Software</p>
+            <p>Arquitectura Hexagonal (Spring Boot) &bull; Microservicios &bull; Analítica (Python FastAPI)</p>
+        </footer>
+
+        <!-- SIMULATED PAYMENT MODAL -->
+        <div id="payment-modal" class="modal-overlay hidden">
+            <div class="payment-modal-card glass-card">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-shield-halved"></i> Simulación de Pago Seguro</h3>
+                    <button class="btn-close-modal" id="btn-close-payment"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div class="payment-total-banner">
+                    <span>Total a Transferir:</span>
+                    <strong id="payment-modal-total">$0.00</strong>
+                </div>
+                
+                <div class="payment-methods-tabs">
+                    <button class="pay-tab active" id="pay-tab-card"><i class="fa-solid fa-credit-card"></i> Tarjeta</button>
+                    <button class="pay-tab" id="pay-tab-qr"><i class="fa-solid fa-qrcode"></i> Yape / Plin</button>
+                    <button class="pay-tab" id="pay-tab-cash"><i class="fa-solid fa-wallet"></i> Al Recoger</button>
+                </div>
+                
+                <div class="payment-forms-container">
+                    <!-- Card Form -->
+                    <div class="pay-form active" id="pay-form-card">
+                        <div class="form-group">
+                            <label>Número de Tarjeta</label>
+                            <input type="text" id="pay-card-num" value="4242 4242 4242 4242" placeholder="0000 0000 0000 0000">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Vencimiento</label>
+                                <input type="text" id="pay-card-exp" value="12/28" placeholder="MM/AA">
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" id="pay-card-cvv" value="123" placeholder="123">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre del Titular</label>
+                            <input type="text" id="pay-card-name" value="Juan Perez" placeholder="Juan Perez">
+                        </div>
+                    </div>
+                    
+                    <!-- QR Form -->
+                    <div class="pay-form" id="pay-form-qr">
+                        <div class="qr-container">
+                            <div class="simulated-qr">
+                                <i class="fa-solid fa-qrcode"></i>
+                                <span>QR SIMULADO</span>
+                            </div>
+                            <p class="qr-text">Escanea el código QR desde tu app móvil de <strong>Yape</strong> o <strong>Plin</strong> para realizar la transferencia de prueba.</p>
+                            <div class="phone-transfer-info">
+                                <span>Celular de transferencia:</span>
+                                <strong>987 654 321</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cash Form -->
+                    <div class="pay-form" id="pay-form-cash">
+                        <div class="cash-info-container">
+                            <i class="fa-solid fa-hand-holding-dollar cash-icon"></i>
+                            <p>Registra tu orden ahora y págalo en efectivo o con tu tarjeta física directamente al retirar tu pedido en el Food Truck.</p>
+                            <span class="badge badge-warning">Simulación de pago contra entrega</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-modal-footer">
+                    <button class="btn btn-outline" id="btn-cancel-pay">Cancelar</button>
+                    <button class="btn btn-primary" id="btn-submit-pay">
+                        <i class="fa-solid fa-lock"></i> <span id="pay-btn-text">Realizar / Confirmar Pago</span>
+                    </button>
+                </div>
+                
+                <!-- Loading and Success Overlay Inside Modal -->
+                <div class="modal-status-overlay hidden" id="modal-status-overlay">
+                    <div class="status-content" id="status-content-loading">
+                        <div class="spinner"></div>
+                        <h4>Procesando pago seguro...</h4>
+                        <p class="text-muted">Simulación de pasarela bancaria. No utilices dinero real.</p>
+                    </div>
+                    <div class="status-content hidden" id="status-content-success">
+                        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <h4>¡Pago Aprobado!</h4>
+                        <p class="text-muted">Tu pedido entrará a la cola de cocina de inmediato.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Script -->
+    <script src="js/app.js"></script>
+</body>
+</html>

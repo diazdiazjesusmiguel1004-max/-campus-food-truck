@@ -1,0 +1,54 @@
+spring:
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:h2:mem:foodtruckdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+jwt:
+  secret: CampusFoodTruckSecretKeyVeryLongAndSecureStringForJWTVerification
+  expiration: 86400000
+analytics:
+  service:
+    url: http://localhost:8000
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:foodtruck}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+jwt:
+  secret: ${JWT_SECRET:CampusFoodTruckSecretKeyVeryLongAndSecureStringForJWTVerification}
+  expiration: 86400000
+analytics:
+  service:
+    url: ${ANALYTICS_SERVICE_URL:http://analytics-python:8000}

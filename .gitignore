@@ -1,0 +1,24 @@
+# Portable Maven
+.maven/
+maven.zip
+
+# Spring Boot build files
+backend-spring/target/
+backend-spring/.idea/
+backend-spring/*.iml
+
+# Python Virtual Environment and caches
+analytics-python/venv/
+analytics-python/__pycache__/
+analytics-python/**/*.pyc
+analytics-python/.pytest_cache/
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
